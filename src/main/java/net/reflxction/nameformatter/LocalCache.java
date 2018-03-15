@@ -16,31 +16,48 @@
 
 package net.reflxction.nameformatter;
 
+import me.kbrewster.exceptions.APIException;
 import me.kbrewster.hypixelapi.HypixelAPI;
 import me.kbrewster.hypixelapi.guild.Guild;
-import me.kbrewster.hypixelapi.guild.Member;
+import me.kbrewster.mojangapi.MojangAPI;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 class LocalCache {
 
-    static List<Member> players() {
-        HypixelAPI api = new HypixelAPI(NameFormatter.getApiKey());
-        String guildID = null; // Gets Guilds Identifier
+    static List<String> players() {
+        List<String> players = new ArrayList<>();
         try {
-            guildID = api.getGuildID("Reflxction");
-        } catch (Exception e) {
-            e.printStackTrace();
+            HypixelAPI api = new HypixelAPI(NameFormatter.getApiKey());
+
+            String guildID = null; // Gets Guilds Identifier
+            try {
+                guildID = api.getGuildID("Reflxction");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Guild guild = null;
+            try {
+                guild = api.getGuild(guildID);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            assert guild != null;
+            guild.getMembers().forEach(m -> {
+                try {
+                    players.add(MojangAPI.getName(UUID.fromString(MojangAPI.addDashes(m.getUuid()))));
+                } catch (IOException | APIException e) {
+                    e.printStackTrace();
+                }
+            });
+            return players;
+        } catch (Exception ignored) {
         }
-        Guild guild = null;
-        try {
-            guild = api.getGuild(guildID);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        assert guild != null;
-        return guild.getMembers();
+        return null;
     }
-
-
 }
+
+

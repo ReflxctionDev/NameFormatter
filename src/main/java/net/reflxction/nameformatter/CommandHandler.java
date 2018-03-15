@@ -22,9 +22,12 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.reflxction.nameformatter.gui.MainGUI;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class CommandHandler implements ICommand {
 
@@ -40,17 +43,9 @@ public class CommandHandler implements ICommand {
 
     @Override
     public List<String> getCommandAliases() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add("nf");
         return list;
-    }
-
-    private class Player {
-
-        void sendMessage(String message) {
-            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(ChatColor.translateAlternateColorCodes(message)));
-        }
-
     }
 
     @Override
@@ -64,6 +59,14 @@ public class CommandHandler implements ICommand {
             }
             if (args[0].equalsIgnoreCase("toggle")) {
                 NameFormatter.setEnabled(!NameFormatter.isEnabled());
+            }
+            if (args[0].equalsIgnoreCase("format")) {
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        Minecraft.getMinecraft().displayGuiScreen(new MainGUI());
+                    }
+                }, 50);
             }
         }
     }
@@ -86,5 +89,13 @@ public class CommandHandler implements ICommand {
     @Override
     public int compareTo(ICommand o) {
         return 0;
+    }
+
+    private class Player {
+
+        void sendMessage(String message) {
+            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(ChatColor.translateAlternateColorCodes(message)));
+        }
+
     }
 }

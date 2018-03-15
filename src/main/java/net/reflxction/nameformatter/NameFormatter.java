@@ -16,8 +16,6 @@
 
 package net.reflxction.nameformatter;
 
-import me.kbrewster.hypixelapi.guild.Member;
-import me.kbrewster.mojangapi.MojangAPI;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -31,16 +29,19 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
 import java.util.List;
-import java.util.UUID;
 
 
 @Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, acceptedMinecraftVersions = Reference.ACCEPTED_VERSIONS)
 public class NameFormatter {
 
-    private static String API_KEY = "pls dont hax me";
+    private static String API_KEY = "df93065f-0334-459c-9245-a43857ac199c";
+    private static String format = ChatColor.translateAlternateColorCodes("&e&l[Impurity]");
+
     private static Configuration config;
+
     private static boolean isEnabled = true;
-    private final List<Member> members = LocalCache.players();
+
+    private final List<String> members = LocalCache.players();
 
     static String getApiKey() {
         return API_KEY;
@@ -62,6 +63,12 @@ public class NameFormatter {
         config.save();
     }
 
+    public static void setFormat(String newFormat) {
+        format = newFormat;
+        config.get("Format", "Format", format).set(newFormat);
+        config.save();
+    }
+
     /**
      * Initialize variables here
      */
@@ -71,23 +78,16 @@ public class NameFormatter {
         config.load();
         isEnabled = config.get("Enabled", "Enabled", true).getBoolean();
         API_KEY = config.get("Key", "Key", "").getString();
+        format = config.get("Format", "Format", format).getString();
         config.save();
     }
 
     @SubscribeEvent
     public void onPlayerNameFormat(PlayerEvent.NameFormat event) {
-        String name;
-        for (Member member : members) {
-            try {
-                name = MojangAPI.getName(UUID.fromString(MojangAPI.addDashes(member.getUuid())));
-                if (event.username.equals(name)) {
-                    event.displayname = ChatColor.translateAlternateColorCodes("&l&e[Impurity] &r" + event.username);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (isEnabled()) {
+            assert members != null;
+            members.stream().filter(m -> m.equals(event.username)).forEach(m -> event.displayname = ChatColor.translateAlternateColorCodes(format + " &r" + event.username));
         }
-
     }
 
     /**
@@ -107,3 +107,5 @@ public class NameFormatter {
         event.registerServerCommand(new CommandHandler());
     }
 }
+
+
