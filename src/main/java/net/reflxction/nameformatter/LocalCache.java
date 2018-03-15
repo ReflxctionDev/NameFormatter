@@ -20,31 +20,27 @@ import me.kbrewster.hypixelapi.HypixelAPI;
 import me.kbrewster.hypixelapi.guild.Guild;
 import me.kbrewster.hypixelapi.guild.Member;
 
-import java.io.IOException;
 import java.util.List;
 
-public class LocalCache {
+class LocalCache {
 
-    static final List<Member> players() {
+    static List<Member> players() {
         HypixelAPI api = new HypixelAPI(NameFormatter.getApiKey());
         String guildID = null; // Gets Guilds Identifier
         try {
             guildID = api.getGuildID("Reflxction");
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
         Guild guild = null;
         try {
             guild = api.getGuild(guildID);
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
         assert guild != null;
         return guild.getMembers();
     }
+
 
 }

@@ -13,6 +13,10 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
     }
 }
+plugins {
+    id 'org.ajoberstar.grgit' version '1.4.2'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
@@ -30,6 +34,7 @@ compileJava.options.encoding = 'UTF-8'
 version = "1.0"
 group = "net.reflxction.nameformatter.NameFormatter" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "NameFormatter"
+//mainClassName = "net.reflxction.nameformatter.NameFormatter"
 
 
 minecraft {
@@ -51,6 +56,13 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 
+shadowJar {
+    classifier '' // Replace the default JAR
+}
+
+reobf {
+    shadowJar {} // Reobfuscate the shadowed JAR
+}
 
 configurations {
     embed
@@ -58,19 +70,14 @@ configurations {
 }
 
 dependencies {
-    embed "com.github.KevinPriv:HypixelApi4J:API-1.7"
-    compile fileTree(dir: 'libs', include: '*.jar')
+    compile 'com.github.KevinPriv:HypixelApi4J:API-1.7'
 }
 
 jar {
-    dependsOn configurations.compile
-    from {
-        configurations.embed.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
+    manifest {
+        attributes FMLCorePluginContainsFMLMod: true
     }
 }
-
 
 processResources {
     // this will ensure that this task is redone when the versions change.
@@ -89,4 +96,13 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs.add('-Xlint:unchecked')
+}
+
+artifacts {
+    archives shadowJar
 }

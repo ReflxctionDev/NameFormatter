@@ -37,16 +37,29 @@ import java.util.UUID;
 @Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, acceptedMinecraftVersions = Reference.ACCEPTED_VERSIONS)
 public class NameFormatter {
 
-    private static String API_KEY = "";
-
+    private static String API_KEY = "pls dont hax me";
+    private static Configuration config;
+    private static boolean isEnabled = true;
     private final List<Member> members = LocalCache.players();
 
-    private static Configuration config;
-
-    private static boolean isEnabled = true;
-
-    public static String getApiKey() {
+    static String getApiKey() {
         return API_KEY;
+    }
+
+    static void setApiKey(String key) {
+        API_KEY = key;
+        config.get("Key", "Key", "").set(key);
+        config.save();
+    }
+
+    static boolean isEnabled() {
+        return isEnabled;
+    }
+
+    static void setEnabled(boolean b) {
+        isEnabled = b;
+        config.get("Enabled", "Enabled", true).set(b);
+        config.save();
     }
 
     /**
@@ -92,21 +105,5 @@ public class NameFormatter {
     @EventHandler
     public void serverStart(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandHandler());
-    }
-
-    static void setEnabled(boolean b) {
-        isEnabled = b;
-        config.get("Enabled", "Enabled", true).set(b);
-        config.save();
-    }
-
-    public static void setApiKey(String key) {
-        API_KEY = key;
-        config.get("Key", "Key", "").set(key);
-        config.save();
-    }
-
-    public static boolean isEnabled() {
-        return isEnabled;
     }
 }
