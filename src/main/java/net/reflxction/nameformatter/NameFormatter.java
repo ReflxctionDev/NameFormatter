@@ -34,7 +34,7 @@ import java.util.List;
 @Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, acceptedMinecraftVersions = Reference.ACCEPTED_VERSIONS)
 public class NameFormatter {
 
-    private static String API_KEY = "df93065f-0334-459c-9245-a43857ac199c";
+    private static String API_KEY = "pls dont hax me";
     private static String format = ChatColor.translateAlternateColorCodes("&e&l[Impurity]");
 
     private static Configuration config;
