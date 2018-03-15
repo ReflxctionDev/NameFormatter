@@ -85,8 +85,9 @@ public class NameFormatter {
     @SubscribeEvent
     public void onPlayerNameFormat(PlayerEvent.NameFormat event) {
         if (isEnabled()) {
-            assert members != null;
-            members.stream().filter(m -> m.equals(event.username)).forEach(m -> event.displayname = ChatColor.translateAlternateColorCodes(format + " &r" + event.username));
+            if (members != null) {
+                members.stream().filter(m -> m.equals(event.username)).forEach(m -> event.displayname = ChatColor.translateAlternateColorCodes(format + " &r" + event.username));
+            }
         }
     }
 
