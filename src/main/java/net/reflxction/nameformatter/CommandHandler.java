@@ -75,7 +75,7 @@ public class CommandHandler implements ICommand {
         if (args.length == 2) {
             if (args[0].equalsIgnoreCase("key")) {
                 NameFormatter.setApiKey(args[1]);
-                p.sendMessage(Reference.PREFIX + ChatColor.GREEN + "Your API key has been set to " + args[1]);
+                p.sendMessage(Reference.PREFIX + ChatColor.GREEN + "Your API key has been set to " + ChatColor.YELLOW + args[1] + ChatColor.GREEN + ".");
                 LocalCache.setCacheKey(args[1]);
             }
         }
