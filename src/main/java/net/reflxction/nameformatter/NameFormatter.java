@@ -42,7 +42,7 @@ public class NameFormatter {
 
     private static boolean isEnabled = true;
 
-    private final List<String> members = LocalCache.cacheGuildPlayers(getApiKey());
+    private final List<String> members = LocalCache.cacheGuildPlayers();
 
     static boolean isEnabled() {
         return isEnabled;
@@ -79,6 +79,7 @@ public class NameFormatter {
         config.load();
         isEnabled = config.get("Enabled", "Enabled", true).getBoolean();
         API_KEY = config.get("Key", "Key", "pls dont hack me").getString();
+        LocalCache.setCacheKey(getApiKey());
         format = config.get("Format", "Format", format).getString();
         config.save();
     }

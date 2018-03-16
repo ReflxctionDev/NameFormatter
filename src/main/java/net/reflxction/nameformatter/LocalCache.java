@@ -28,7 +28,13 @@ import java.util.UUID;
 
 class LocalCache {
 
-    static List<String> cacheGuildPlayers(final String key) {
+    private static String key;
+
+    private LocalCache() {
+        throw new AssertionError("Private constructor may not be initialized");
+    }
+
+    static List<String> cacheGuildPlayers() {
         List<String> players = new ArrayList<>();
         try {
             HypixelAPI api = new HypixelAPI(key);
@@ -57,6 +63,10 @@ class LocalCache {
         } catch (Exception ignored) {
         }
         return null;
+    }
+
+    static void setCacheKey(String s) {
+        key = s;
     }
 
 }
