@@ -97,6 +97,7 @@ public class MainGUI extends GuiScreen {
         this.textField.mouseClicked(x, y, btn);
     }
 
+    // Class for ease access to the EntityPlayerSP instance
     private class Player {
 
         void sendMessage(String message) {
