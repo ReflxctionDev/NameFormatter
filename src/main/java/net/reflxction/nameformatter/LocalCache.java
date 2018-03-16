@@ -65,6 +65,11 @@ class LocalCache {
         return null;
     }
 
+    /**
+     * A method which handles the key used to cache data
+     *
+     * @param s Key which the cache key should be set to
+     */
     static void setCacheKey(String s) {
         key = s;
     }
