@@ -1,14 +1,16 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "nameformatter",
+  "name": "Name Formatter",
+  "description": "A mod which highlights Impurity members.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": [
+    "Reflxction"
+  ],
+  "credits": "Supported by GitHub Inc., made by Reflxction",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []

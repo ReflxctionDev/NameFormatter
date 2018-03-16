@@ -28,10 +28,10 @@ import java.util.UUID;
 
 class LocalCache {
 
-    static List<String> players() {
+    static List<String> cacheGuildPlayers(final String key) {
         List<String> players = new ArrayList<>();
         try {
-            HypixelAPI api = new HypixelAPI(NameFormatter.getApiKey());
+            HypixelAPI api = new HypixelAPI(key);
 
             String guildID = null; // Gets Guilds Identifier
             try {
@@ -58,6 +58,7 @@ class LocalCache {
         }
         return null;
     }
+
 }
 
 

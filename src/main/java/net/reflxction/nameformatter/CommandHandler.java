@@ -51,33 +51,33 @@ public class CommandHandler implements ICommand {
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         Player p = new Player();
-        switch (args.length) {
-            case 0:
-                p.sendMessage("&cIncorrect usage. Try /" + getCommandUsage(sender));
-                break;
-            case 1:
-                if (args[0].equalsIgnoreCase("toggle")) {
-                    NameFormatter.setEnabled(!NameFormatter.isEnabled());
-                    p.sendMessage(Reference.PREFIX + (NameFormatter.isEnabled() ? ChatColor.GREEN + "Name Formatter has been enabled" : ChatColor.RED + "Name Formatter has been disabled"));
-                }
-                if (args[0].equalsIgnoreCase("format")) {
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            Minecraft.getMinecraft().displayGuiScreen(new MainGUI());
-                        }
-                    }, 50);
-                }
-                if (args[0].equalsIgnoreCase("key")) {
-                    p.sendMessage(Reference.PREFIX + ChatColor.RED + "Invalid usage. Try /nf key <key>");
-                }
-                break;
-            case 2:
-                if (args[0].equalsIgnoreCase("key")) {
-                    NameFormatter.setApiKey(args[1]);
-                    p.sendMessage(Reference.PREFIX + ChatColor.GREEN + "Your API key has been set to " + args[0]);
-                }
-                break;
+        if (args.length == 0) {
+            p.sendMessage("&cIncorrect usage. Try /" + getCommandUsage(sender));
+        }
+        if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("toggle")) {
+                NameFormatter.setEnabled(!NameFormatter.isEnabled());
+                p.sendMessage(Reference.PREFIX + (NameFormatter.isEnabled() ? ChatColor.GREEN + "Name Formatter has been enabled" : ChatColor.RED + "Name Formatter has been disabled"));
+            }
+
+            if (args[0].equalsIgnoreCase("format")) {
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        Minecraft.getMinecraft().displayGuiScreen(new MainGUI());
+                    }
+                }, 50);
+            }
+            if (args[0].equalsIgnoreCase("key")) {
+                p.sendMessage(Reference.PREFIX + ChatColor.RED + "Invalid usage. Try /nf key <key>");
+            }
+        }
+        if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("key")) {
+                NameFormatter.setApiKey(args[1]);
+                p.sendMessage(Reference.PREFIX + ChatColor.GREEN + "Your API key has been set to " + args[1]);
+                LocalCache.cacheGuildPlayers(args[1]);
+            }
         }
     }
 
