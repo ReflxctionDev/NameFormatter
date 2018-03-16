@@ -35,7 +35,7 @@ import java.util.UUID;
 @Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, acceptedMinecraftVersions = Reference.ACCEPTED_VERSIONS)
 public class NameFormatter {
 
-    private static String API_KEY = "27f37bf7-796b-4347-98e4-1c7522055737";
+    private static String API_KEY = "pls dont hack me";
     private static String format = ChatColor.translateAlternateColorCodes("&e&l[Impurity]");
 
     private static Configuration config;
@@ -66,7 +66,7 @@ public class NameFormatter {
 
     static void setApiKey(String key) {
         API_KEY = key;
-        config.get("Key", "Key", "27f37bf7-796b-4347-98e4-1c7522055737").set(UUID.fromString("27f37bf7-796b-4347-98e4-1c7522055737").toString());
+        config.get("Key", "Key", "pls dont hack me").set(UUID.fromString(key).toString());
         config.save();
     }
 
@@ -78,7 +78,7 @@ public class NameFormatter {
         config = new Configuration(new File("config/name-formatter.cfg"));
         config.load();
         isEnabled = config.get("Enabled", "Enabled", true).getBoolean();
-        API_KEY = config.get("Key", "Key", "27f37bf7-796b-4347-98e4-1c7522055737").getString();
+        API_KEY = config.get("Key", "Key", "pls dont hack me").getString();
         format = config.get("Format", "Format", format).getString();
         config.save();
     }
