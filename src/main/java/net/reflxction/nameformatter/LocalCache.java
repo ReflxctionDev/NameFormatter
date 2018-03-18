@@ -29,6 +29,7 @@ import java.util.UUID;
 class LocalCache {
 
     private static String key;
+    private static HypixelAPI api = new HypixelAPI(key);
 
     private LocalCache() {
         throw new AssertionError("Private constructor may not be initialized");
@@ -37,8 +38,6 @@ class LocalCache {
     static List<String> cacheGuildPlayers() {
         List<String> players = new ArrayList<>();
         try {
-            HypixelAPI api = new HypixelAPI(key);
-
             String guildID = null; // Gets Guilds Identifier
             try {
                 guildID = api.getGuildID("Reflxction");
@@ -59,10 +58,30 @@ class LocalCache {
                     e.printStackTrace();
                 }
             });
-            return players;
         } catch (Exception ignored) {
         }
-        return null;
+        return players;
+    }
+
+
+    static List<String> cacheRanks() {
+        List<String> ranks = new ArrayList<>();
+        cacheGuildPlayers().forEach(s -> {
+            try {
+                ranks.add(modifyRank(api.getPlayer(s).getCurrentRank(), api.getPlayer(s).getRankPlusColor()));
+            } catch (APIException | IOException e) {
+                e.printStackTrace();
+            }
+        });
+        return ranks;
+    }
+
+    private static String modifyRank(String rank, String plusColor) {
+        if (rank.equals("NONE")) return "";
+        if (rank.equals("VIP_PLUS")) return ChatColor.translateAlternateColorCodes("&a[VIP&6+&a]");
+        if (rank.equals("MVP+"))
+            return ChatColor.translateAlternateColorCodes("&b[MVP" + ChatColor.fromName(plusColor) + "+&b]");
+        return "";
     }
 
     /**
