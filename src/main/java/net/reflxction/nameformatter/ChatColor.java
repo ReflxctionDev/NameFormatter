@@ -11,67 +11,67 @@ public enum ChatColor {
     /**
      * Represents black
      */
-    BLACK('0', 0x00),
+    BLACK('0', 0x00, "BLACK"),
     /**
      * Represents dark blue
      */
-    DARK_BLUE('1', 0x1),
+    DARK_BLUE('1', 0x1, "DARK_BLUE"),
     /**
      * Represents dark green
      */
-    DARK_GREEN('2', 0x2),
+    DARK_GREEN('2', 0x2, "DARK_GREEN"),
     /**
      * Represents dark blue (aqua)
      */
-    DARK_AQUA('3', 0x3),
+    DARK_AQUA('3', 0x3, "DARK_AQUA"),
     /**
      * Represents dark red
      */
-    DARK_RED('4', 0x4),
+    DARK_RED('4', 0x4, "DARK_RED"),
     /**
      * Represents dark purple
      */
-    DARK_PURPLE('5', 0x5),
+    DARK_PURPLE('5', 0x5, "DARK_PURPLE"),
     /**
      * Represents gold
      */
-    GOLD('6', 0x6),
+    GOLD('6', 0x6, "GOLD"),
     /**
      * Represents gray
      */
-    GRAY('7', 0x7),
+    GRAY('7', 0x7, "GRAY"),
     /**
      * Represents dark gray
      */
-    DARK_GRAY('8', 0x8),
+    DARK_GRAY('8', 0x8, "DARK_GRAY"),
     /**
      * Represents blue
      */
-    BLUE('9', 0x9),
+    BLUE('9', 0x9, "BLUE"),
     /**
      * Represents green
      */
-    GREEN('a', 0xA),
+    GREEN('a', 0xA, "GREEN"),
     /**
      * Represents aqua
      */
-    AQUA('b', 0xB),
+    AQUA('b', 0xB, "AQUA"),
     /**
      * Represents red
      */
-    RED('c', 0xC),
+    RED('c', 0xC, "RED"),
     /**
      * Represents light purple
      */
-    LIGHT_PURPLE('d', 0xD),
+    LIGHT_PURPLE('d', 0xD, "LIGHT_PURPLE"),
     /**
      * Represents yellow
      */
-    YELLOW('e', 0xE),
+    YELLOW('e', 0xE, "YELLOW"),
     /**
      * Represents white
      */
-    WHITE('f', 0xF),
+    WHITE('f', 0xF, "WHITE"),
     /**
      * Represents magical characters that change around randomly
      */
@@ -102,13 +102,20 @@ public enum ChatColor {
      * you need to dynamically convert colour codes from your custom format.
      */
     public static final char COLOR_CHAR = '\u00A7';
+    private final static Map<Integer, ChatColor> BY_ID = Maps.newHashMap();
+    private final static Map<Character, ChatColor> BY_CHAR = Maps.newHashMap();
+
+    static {
+        for (ChatColor color : values()) {
+            BY_ID.put(color.intCode, color);
+            BY_CHAR.put(color.code, color);
+        }
+    }
 
     private final int intCode;
     private final char code;
     private final boolean isFormat;
     private final String toString;
-    private final static Map<Integer, ChatColor> BY_ID = Maps.newHashMap();
-    private final static Map<Character, ChatColor> BY_CHAR = Maps.newHashMap();
 
     ChatColor(char code, int intCode) {
         this(code, intCode, false);
@@ -121,9 +128,11 @@ public enum ChatColor {
         this.toString = new String(new char[]{COLOR_CHAR, code});
     }
 
-    @Override
-    public String toString() {
-        return toString;
+    ChatColor(char code, int intCode, String name) {
+        this.code = code;
+        this.intCode = intCode;
+        this.isFormat = false;
+        this.toString = name;
     }
 
     /**
@@ -146,10 +155,17 @@ public enum ChatColor {
         return new String(b);
     }
 
-    static {
+    public static ChatColor fromName(String name) {
         for (ChatColor color : values()) {
-            BY_ID.put(color.intCode, color);
-            BY_CHAR.put(color.code, color);
+            if (color.toString().equals(name)) {
+                return color;
+            }
         }
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return toString;
     }
 }
