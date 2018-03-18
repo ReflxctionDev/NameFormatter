@@ -43,6 +43,7 @@ public class NameFormatter {
     private static boolean isEnabled = true;
 
     private final List<String> members = LocalCache.cacheGuildPlayers();
+    private final List<String> ranks = LocalCache.cacheRanks();
 
     static boolean isEnabled() {
         return isEnabled;
@@ -87,6 +88,10 @@ public class NameFormatter {
     @SubscribeEvent
     public void onPlayerNameFormat(PlayerEvent.NameFormat event) {
         if (isEnabled()) {
+            try {
+                event.setCanceled(true);
+            } catch (IllegalArgumentException ignored) {
+            }
             if (members != null) {
                 members.stream().filter(m -> m.equals(event.username)).forEach(m -> event.displayname = ChatColor.translateAlternateColorCodes(format + " &r" + event.username));
             }
