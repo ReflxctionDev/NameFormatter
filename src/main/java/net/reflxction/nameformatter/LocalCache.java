@@ -19,6 +19,7 @@ package net.reflxction.nameformatter;
 import me.kbrewster.exceptions.APIException;
 import me.kbrewster.hypixelapi.HypixelAPI;
 import me.kbrewster.hypixelapi.guild.Guild;
+import me.kbrewster.hypixelapi.guild.Member;
 import me.kbrewster.mojangapi.MojangAPI;
 
 import java.io.IOException;
@@ -53,7 +54,7 @@ class LocalCache {
             assert guild != null;
             guild.getMembers().forEach(m -> {
                 try {
-                    players.add(MojangAPI.getName(UUID.fromString(MojangAPI.addDashes(m.getUuid()))));
+                    players.add(modifyRank(api.getPlayer(toName(m)).getCurrentRank(), api.getPlayer(toName(m)).getRankPlusColor()) + " " + toName(m));
                 } catch (IOException | APIException e) {
                     e.printStackTrace();
                 }
@@ -63,17 +64,14 @@ class LocalCache {
         return players;
     }
 
-
-    static List<String> cacheRanks() {
-        List<String> ranks = new ArrayList<>();
-        cacheGuildPlayers().forEach(s -> {
-            try {
-                ranks.add(modifyRank(api.getPlayer(s).getCurrentRank(), api.getPlayer(s).getRankPlusColor()));
-            } catch (APIException | IOException e) {
-                e.printStackTrace();
-            }
-        });
-        return ranks;
+    private static String toName(Member m) {
+        String name = "";
+        try {
+            name = MojangAPI.getName(UUID.fromString(MojangAPI.addDashes(m.getUuid())));
+        } catch (IOException | APIException e) {
+            e.printStackTrace();
+        }
+        return name;
     }
 
     private static String modifyRank(String rank, String plusColor) {
