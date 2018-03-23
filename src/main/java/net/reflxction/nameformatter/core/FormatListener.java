@@ -30,6 +30,8 @@ public class FormatListener {
 
     @SubscribeEvent
     public void onPlayerNameFormat(PlayerEvent.NameFormat event) {
+        System.out.println(event.displayname + " <- DISPLAYNAME");
+        System.out.println(event.username + " <- USERNAME");
 
         if (NameFormatter.isEnabled()) {
             try {
@@ -39,7 +41,7 @@ public class FormatListener {
             if (main.getMembersCache() != null) {
                 main.getMembersCache().stream()
                         .filter(m -> StringUtils.stripRank(m).equals(event.username))
-                        .forEach(m -> event.displayname = ChatColor.translateAlternateColorCodes(main.getFormat() + "&r " + m));
+                        .forEach(m -> event.displayname = ChatColor.translateAlternateColorCodes(main.getFormat() + StringUtils.stripRank(m)));
             }
         }
     }

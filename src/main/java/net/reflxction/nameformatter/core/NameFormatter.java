@@ -44,7 +44,7 @@ public class NameFormatter {
 
     private static boolean isEnabled = true;
 
-    private List<String> members = LocalCache.updateCache();
+    private List<String> members = LocalCache.updatedCache();
 
     public static boolean isEnabled() {
         return isEnabled;
@@ -54,6 +54,10 @@ public class NameFormatter {
         isEnabled = b;
         config.get("Enabled", "Enabled", true).set(b);
         config.save();
+    }
+
+    public static Configuration getConfig() {
+        return config;
     }
 
     private static String getApiKey() {

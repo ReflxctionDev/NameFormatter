@@ -17,8 +17,10 @@
 package net.reflxction.nameformatter.utils;
 
 import me.kbrewster.exceptions.APIException;
+import me.kbrewster.exceptions.InvalidPlayerException;
 import me.kbrewster.hypixelapi.HypixelAPI;
 import me.kbrewster.hypixelapi.guild.Guild;
+import me.kbrewster.hypixelapi.guild.Member;
 import me.kbrewster.hypixelapi.player.HypixelPlayer;
 
 import java.io.IOException;
@@ -30,56 +32,60 @@ import java.util.List;
  */
 public class LocalCache {
 
+    private static final Guild guild = getGuild();
+    private static final List<Member> guildMembers = guild.getMembers();
     private static String key = "7ab406d7-9776-4fa8-b03e-d8866c1d148b";
     private static final HypixelAPI api = new HypixelAPI(key);
 
-
-    public static List<String> updateCache() {
-        List<String> players = null;
+    private static Guild getGuild() {
+        Guild g = null;
         try {
-            players = new ArrayList<>();
             try {
                 String guildID = null;
                 try {
-                    guildID = api.getGuildID("Reflxction");
+                    guildID = getApiInstance().getGuildID("Reflxction");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Guild guild = null;
                 try {
-                    guild = api.getGuild(guildID);
+                    g = api.getGuild(guildID);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                assert guild != null;
-                List<String> finalPlayers = players;
-                guild.getMembers().forEach(m -> {
-                    try {
-                        HypixelPlayer player = api.getPlayer(StringUtils.getName(m));
-                        String rank = player.getCurrentRank();
-                        String plusColor = player.getRankPlusColor();
-                        finalPlayers.add(StringUtils.modifyRank(rank, plusColor) + " " + StringUtils.getName(m));
-                    } catch (IOException | APIException e) {
-                        e.printStackTrace();
-                    }
-                });
             } catch (Exception ignored) {
             }
         } catch (Exception ignored) {
         }
+        return g;
+    }
+
+    public static List<String> updatedCache() {
+        List<String> players = new ArrayList<>();
+        guildMembers.forEach(m -> {
+            try {
+                HypixelPlayer player = getApiInstance().getPlayer(StringUtils.getName(m));
+                String rank = player.getCurrentRank();
+                String plusColor = player.getRankPlusColor();
+                players.add(StringUtils.modifyRank(rank, plusColor) + " " + StringUtils.getName(m));
+            } catch (IOException | APIException | InvalidPlayerException ignored) {
+            }
+
+        });
         return players;
     }
+
 
     /**
      * A method which handles the key used to cache data
      *
-     * @param s Key which the cache key should be set to
+     * @param s Key which the cache key should be set to&r&
      */
     public static void setCacheKey(String s) {
         key = s;
     }
 
-    public static HypixelAPI getApiInstance() {
+
+    private static HypixelAPI getApiInstance() {
         return api;
     }
 
