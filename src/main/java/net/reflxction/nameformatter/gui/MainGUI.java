@@ -21,9 +21,10 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.ChatComponentText;
-import net.reflxction.nameformatter.ChatColor;
-import net.reflxction.nameformatter.NameFormatter;
 import net.reflxction.nameformatter.Reference;
+import net.reflxction.nameformatter.core.NameFormatter;
+import net.reflxction.nameformatter.utils.ChatColor;
+import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 
@@ -32,6 +33,7 @@ public class MainGUI extends GuiScreen {
     private GuiTextField textField;
 
     private Player p = new Player();
+    private NameFormatter m = new NameFormatter();
 
     private void clearTextField() {
         textField.setText("");
@@ -51,7 +53,7 @@ public class MainGUI extends GuiScreen {
     @Override
     public void actionPerformed(GuiButton button) throws IOException {
         if (button.id == 1) {
-            NameFormatter.setFormat(textField.getText());
+            m.setFormat(textField.getText());
             p.sendMessage(Reference.PREFIX + ChatColor.GREEN + "Format has been set to " + ChatColor.AQUA + textField.getText());
             clearTextField();
             closeGUI();
@@ -83,6 +85,7 @@ public class MainGUI extends GuiScreen {
 
     @Override
     public void updateScreen() {
+        Mouse.setGrabbed(false);
         super.updateScreen();
         this.textField.updateCursorCounter();
     }

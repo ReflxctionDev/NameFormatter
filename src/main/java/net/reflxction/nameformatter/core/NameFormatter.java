@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package net.reflxction.nameformatter;
+package net.reflxction.nameformatter.core;
 
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.reflxction.nameformatter.Reference;
+import net.reflxction.nameformatter.command.CommandHandler;
+import net.reflxction.nameformatter.utils.ChatColor;
+import net.reflxction.nameformatter.utils.LocalCache;
 
 import java.io.File;
 import java.util.List;
@@ -35,39 +37,42 @@ import java.util.UUID;
 @Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, acceptedMinecraftVersions = Reference.ACCEPTED_VERSIONS)
 public class NameFormatter {
 
-    private static String API_KEY = "pls dont hack me";
+    private static String API_KEY = "7ab406d7-9776-4fa8-b03e-d8866c1d148b";
     private static String format = ChatColor.translateAlternateColorCodes("&e&l[Impurity]");
 
     private static Configuration config;
 
     private static boolean isEnabled = true;
 
-    private final List<String> members = LocalCache.cacheGuildPlayers();
-    private final List<String> ranks = LocalCache.cacheRanks();
+    private List<String> members = LocalCache.updateCache();
 
-    static boolean isEnabled() {
+    public static boolean isEnabled() {
         return isEnabled;
     }
 
-    static void setEnabled(boolean b) {
+    public void setEnabled(boolean b) {
         isEnabled = b;
         config.get("Enabled", "Enabled", true).set(b);
         config.save();
     }
 
-    public static void setFormat(String newFormat) {
-        format = newFormat;
-        config.get("Format", "Format", format).set(newFormat);
-        config.save();
-    }
-
-    private String getApiKey() {
+    private static String getApiKey() {
         return API_KEY;
     }
 
-    static void setApiKey(String key) {
+    public void setApiKey(String key) {
         API_KEY = key;
         config.get("Key", "Key", "pls dont hack me").set(UUID.fromString(key).toString());
+        config.save();
+    }
+
+    String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String newFormat) {
+        format = newFormat;
+        config.get("Format", "Format", format).set(newFormat);
         config.save();
     }
 
@@ -79,23 +84,10 @@ public class NameFormatter {
         config = new Configuration(new File("config/name-formatter.cfg"));
         config.load();
         isEnabled = config.get("Enabled", "Enabled", true).getBoolean();
-        API_KEY = config.get("Key", "Key", "pls dont hack me").getString();
+        setApiKey(config.get("Key", "Key", "7ab406d7-9776-4fa8-b03e-d8866c1d148b").getString());
         LocalCache.setCacheKey(getApiKey());
         format = config.get("Format", "Format", format).getString();
         config.save();
-    }
-
-    @SubscribeEvent
-    public void onPlayerNameFormat(PlayerEvent.NameFormat event) {
-        if (isEnabled()) {
-            try {
-                event.setCanceled(true);
-            } catch (IllegalArgumentException ignored) {
-            }
-            if (members != null) {
-                members.stream().filter(m -> m.equals(event.username)).forEach(m -> event.displayname = ChatColor.translateAlternateColorCodes(format + " &r" + event.username));
-            }
-        }
     }
 
     /**
@@ -103,8 +95,8 @@ public class NameFormatter {
      */
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(this);
-        ClientCommandHandler.instance.registerCommand(new CommandHandler());
+        MinecraftForge.EVENT_BUS.register(new FormatListener());
+        ClientCommandHandler.instance.registerCommand(new CommandHandler(this));
     }
 
     /**
@@ -112,7 +104,11 @@ public class NameFormatter {
      */
     @EventHandler
     public void serverStart(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandHandler());
+        event.registerServerCommand(new CommandHandler(this));
+    }
+
+    List<String> getMembersCache() {
+        return members;
     }
 }
 

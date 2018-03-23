@@ -1,13 +1,15 @@
-package net.reflxction.nameformatter;
+package net.reflxction.nameformatter.utils;
 
 import com.google.common.collect.Maps;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * All supported color values for chat
  */
 public enum ChatColor {
+
     /**
      * Represents black
      */
@@ -104,6 +106,7 @@ public enum ChatColor {
     public static final char COLOR_CHAR = '\u00A7';
     private final static Map<Integer, ChatColor> BY_ID = Maps.newHashMap();
     private final static Map<Character, ChatColor> BY_CHAR = Maps.newHashMap();
+    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + String.valueOf(COLOR_CHAR) + "[0-9A-FK-OR]");
 
     static {
         for (ChatColor color : values()) {
@@ -116,6 +119,7 @@ public enum ChatColor {
     private final char code;
     private final boolean isFormat;
     private final String toString;
+    private String colorName;
 
     ChatColor(char code, int intCode) {
         this(code, intCode, false);
@@ -129,10 +133,8 @@ public enum ChatColor {
     }
 
     ChatColor(char code, int intCode, String name) {
-        this.code = code;
-        this.intCode = intCode;
-        this.isFormat = false;
-        this.toString = name;
+        this(code, intCode, false);
+        this.colorName = name;
     }
 
     /**
@@ -164,8 +166,30 @@ public enum ChatColor {
         return null;
     }
 
+    /**
+     * Strips the given message of all color codes
+     *
+     * @param input String to strip of color
+     * @return A copy of the input string, without any coloring
+     */
+    public static String stripColor(final String input) {
+        if (input == null) {
+            return null;
+        }
+
+        return STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
+    }
+
+    public String getName() {
+        return colorName;
+    }
+
     @Override
     public String toString() {
         return toString;
+    }
+
+    public boolean isFormat() {
+        return isFormat;
     }
 }
